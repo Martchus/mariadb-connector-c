@@ -2050,11 +2050,7 @@ static void DBUGOpenFile(CODE_STATE *cs,
       }
       else
       {
-#ifdef _WIN32
-        if (fopen_s(&fp, name, append ? "a+" : "w"))
-#else
         if (!(fp= fopen(name, append ? "a+" : "w")))
-#endif
         {
           (void) fprintf(stderr, ERR_OPEN, cs->process, name);
           perror("");
