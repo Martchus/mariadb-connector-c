@@ -373,7 +373,7 @@ IF(CMAKE_GENERATOR MATCHES Xcode)
 ENDIF()
 
 IF(WIN32)
-  SET_VERSION_INFO("TARGET:libmariadb"
+  SET_VERSION_INFO("TARGET:mariadb"
                    "FILE_TYPE:VFT_DLL"
                    "SOURCE_FILE:libmariadb/libmariadb.c"
                    "ORIGINAL_FILE_NAME:libmariadb.dll"
@@ -384,17 +384,17 @@ ADD_LIBRARY(mariadbclient STATIC  ${MARIADB_OBJECTS} ${EMPTY_FILE})
 TARGET_LINK_LIBRARIES(mariadbclient ${SYSTEM_LIBS})
 
 IF(UNIX)
-  ADD_LIBRARY(libmariadb SHARED ${libmariadb_RC} ${MARIADB_OBJECTS} ${EMPTY_FILE} mariadbclient.def)
-  SET_TARGET_PROPERTIES(libmariadb PROPERTIES COMPILE_FLAGS "${CMAKE_SHARED_LIBRARY_C_FLAGS}")
+  ADD_LIBRARY(mariadb SHARED ${libmariadb_RC} ${MARIADB_OBJECTS} ${EMPTY_FILE} mariadbclient.def)
+  SET_TARGET_PROPERTIES(mariadb PROPERTIES COMPILE_FLAGS "${CMAKE_SHARED_LIBRARY_C_FLAGS}")
 ELSE()
-  ADD_LIBRARY(libmariadb SHARED ${libmariadb_RC} mariadbclient.def)
-  TARGET_LINK_LIBRARIES(libmariadb  mariadbclient)
-  SET_TARGET_PROPERTIES(libmariadb PROPERTIES LINKER_LANGUAGE C)
+  ADD_LIBRARY(mariadb SHARED ${libmariadb_RC} mariadbclient.def)
+  TARGET_LINK_LIBRARIES(mariadb  mariadbclient)
+  SET_TARGET_PROPERTIES(mariadb PROPERTIES LINKER_LANGUAGE C)
 ENDIF()
 
-TARGET_LINK_LIBRARIES(libmariadb ${SYSTEM_LIBS})
+TARGET_LINK_LIBRARIES(mariadb ${SYSTEM_LIBS})
 
-SIGN_TARGET(libmariadb)
+SIGN_TARGET(mariadb)
 
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8 AND MSVC)
   SET_TARGET_PROPERTIES(mariadbclient PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
@@ -402,15 +402,15 @@ ENDIF()
 
 IF(CMAKE_SYSTEM_NAME MATCHES "Linux")
   IF (NOT WITH_ASAN)
-    TARGET_LINK_LIBRARIES (libmariadb "-Wl,--no-undefined")
+    TARGET_LINK_LIBRARIES (mariadb "-Wl,--no-undefined")
   ENDIF()
-  TARGET_LINK_LIBRARIES (libmariadb "-Wl,--version-script=${CC_BINARY_DIR}/libmariadb/mariadbclient.def")
+  TARGET_LINK_LIBRARIES (mariadb "-Wl,--version-script=${CC_BINARY_DIR}/libmariadb/mariadbclient.def")
 ENDIF()
 
 SET_TARGET_PROPERTIES(mariadbclient PROPERTIES IMPORTED_INTERFACE_LINK_LIBRARIES "${SYSTEM_LIBS}")
-SET_TARGET_PROPERTIES(libmariadb PROPERTIES IMPORTED_INTERFACE_LINK_LIBRARIES "${SYSTEM_LIBS}")
+SET_TARGET_PROPERTIES(mariadb PROPERTIES IMPORTED_INTERFACE_LINK_LIBRARIES "${SYSTEM_LIBS}")
 
-SET_TARGET_PROPERTIES(libmariadb PROPERTIES PREFIX "")
+SET_TARGET_PROPERTIES(mariadb PROPERTIES PREFIX "")
 
 #
 # Installation
@@ -422,27 +422,27 @@ INCLUDE(${CC_SOURCE_DIR}/cmake/symlink.cmake)
 # use mariadb client library we provide libmysql symlinks
 
 IF(WITH_MYSQLCOMPAT)
-  create_symlink(libmysqlclient${CMAKE_SHARED_LIBRARY_SUFFIX} libmariadb ${INSTALL_LIBDIR})
-  create_symlink(libmysqlclient_r${CMAKE_SHARED_LIBRARY_SUFFIX} libmariadb ${INSTALL_LIBDIR})
+  create_symlink(libmysqlclient${CMAKE_SHARED_LIBRARY_SUFFIX} mariadb ${INSTALL_LIBDIR})
+  create_symlink(libmysqlclient_r${CMAKE_SHARED_LIBRARY_SUFFIX} mariadb ${INSTALL_LIBDIR})
   create_symlink(libmysqlclient${CMAKE_STATIC_LIBRARY_SUFFIX} mariadbclient ${INSTALL_LIBDIR})
   create_symlink(libmysqlclient_r${CMAKE_STATIC_LIBRARY_SUFFIX} mariadbclient ${INSTALL_LIBDIR})
 ENDIF()
 
 
-SET_TARGET_PROPERTIES(libmariadb PROPERTIES VERSION
+SET_TARGET_PROPERTIES(mariadb PROPERTIES VERSION
  ${CPACK_PACKAGE_VERSION_MAJOR}
  SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR})
 
 INSTALL(TARGETS mariadbclient
           COMPONENT Development
           DESTINATION ${INSTALL_LIBDIR})
-INSTALL(TARGETS libmariadb
+INSTALL(TARGETS mariadb
           COMPONENT SharedLibraries
         DESTINATION ${INSTALL_LIBDIR})
 
 IF(WIN32)
    # On Windows, install PDB
-   GET_TARGET_PROPERTY(location libmariadb LOCATION)
+   GET_TARGET_PROPERTY(location mariadb LOCATION)
    STRING(REPLACE ".dll" ".pdb" pdb_location ${location})
    IF (NOT "${CMAKE_CFG_INTDIR}" STREQUAL ".")
      STRING(REPLACE "${CMAKE_CFG_INTDIR}" "\${CMAKE_INSTALL_CONFIG_NAME}"
