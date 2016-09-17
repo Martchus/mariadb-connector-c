@@ -458,7 +458,7 @@ typedef SOCKET_SIZE_TYPE size_socket;
 #define NO_PISAM		/* Not needed anymore */
 #define NO_MISAM		/* Not needed anymore */
 #define NO_HASH			/* Not needed anymore */
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #define NO_DIR_LIBRARY		/* Not standar dir-library */
 #define USE_MY_STAT_STRUCT	/* For my_lib */
 #ifdef _MSC_VER
