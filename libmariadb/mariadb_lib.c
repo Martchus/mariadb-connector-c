@@ -2665,7 +2665,7 @@ mysql_optionsv(MYSQL *mysql,enum mysql_option option, ...)
     {
 #if defined(__APPLE__) || defined(__FreeBSD__)
       const char * appname = getprogname();
-#elif defined(_GNU_SOURCE)
+#elif defined(_GNU_SOURCE) && !defined(WIN32)
       const char * appname = program_invocation_short_name;
 #elif defined(WIN32)
       char appname[FN_REFLEN]= "";
