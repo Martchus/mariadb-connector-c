@@ -32,7 +32,7 @@
 extern "C" {
 #endif /* __cplusplus */ 
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !(defined(__MINGW32__) || defined(__MINGW64__))
 
 typedef CRITICAL_SECTION pthread_mutex_t;
 
