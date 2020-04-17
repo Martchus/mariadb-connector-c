@@ -20,7 +20,7 @@
 #define _GNU_SOURCE 1
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !(defined(__MINGW32__) || defined(__MINGW64__))
 #define HAVE_WINCRYPT
 #undef HAVE_OPENSSL
 #undef HAVE_GNUTLS

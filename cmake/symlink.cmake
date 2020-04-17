@@ -7,7 +7,7 @@
 #
 MACRO(create_symlink symlink_name target install_path)
 # According to cmake documentation symlinks work on unix systems only
-IF(UNIX)
+IF(UNIX OR MINGW)
   # Get target components 
   ADD_CUSTOM_COMMAND(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${symlink_name}
