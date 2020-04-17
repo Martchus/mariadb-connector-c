@@ -30,7 +30,7 @@
 #define strdup _strdup
 #define sleep(x) Sleep(1000*(x))
 #define strerror_r(errno,buf,len) strerror_s(buf,len,errno)
-#define STDCALL __stdcall 
+#define STDCALL
 #endif
 
 #include <ma_config.h>
@@ -436,7 +436,7 @@ typedef SOCKET_SIZE_TYPE size_socket;
 #define NO_PISAM		/* Not needed anymore */
 #define NO_MISAM		/* Not needed anymore */
 #define NO_HASH			/* Not needed anymore */
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #define NO_DIR_LIBRARY		/* Not standard dir-library */
 #define USE_MY_STAT_STRUCT	/* For my_lib */
 #ifdef _MSC_VER
