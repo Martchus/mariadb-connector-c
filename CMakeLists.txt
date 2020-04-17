@@ -2,6 +2,8 @@
 
 # This is the LGPL libmariadb project.
 
+add_definitions(-D_WIN32_WINNT=0x0601)
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8 FATAL_ERROR)
 INCLUDE(CheckFunctionExists)
 IF(COMMAND CMAKE_POLICY)
@@ -51,20 +53,16 @@ MACRO(ADD_OPTION _name _text _default)
 ENDMACRO()
 
 ### Options ###
-IF(NOT WIN32)
-  ADD_OPTION(WITH_MYSQLCOMPAT "creates libmysql* symbolic links" OFF)
-ELSE()
-  ADD_OPTION(WITH_MSI "Build MSI installation package" OFF)
-  ADD_OPTION(WITH_SIGNCODE "digitally sign files" OFF)
-  ADD_OPTION(WITH_RTC "enables run time checks for debug builds" OFF)
-  ADD_OPTION(WITH_ICONV "enables character set conversion" OFF)
-ENDIF()
-
+ADD_OPTION(WITH_MYSQLCOMPAT "creates libmysql* symbolic links" OFF)
+ADD_OPTION(WITH_MSI "Build MSI installation package" OFF)
+ADD_OPTION(WITH_SIGNCODE "digitally sign files" OFF)
+ADD_OPTION(WITH_RTC "enables run time checks for debug builds" OFF)
 ADD_OPTION(WITH_UNIT_TESTS "build test suite" ON)
 ADD_OPTION(WITH_DYNCOL "Enables support of dynamic columns" ON)
 ADD_OPTION(WITH_EXTERNAL_ZLIB "Enables use of external zlib" OFF)
 ADD_OPTION(WITH_CURL "Enables use of curl" ON)
 ADD_OPTION(WITH_SSL "Enables use of TLS/SSL library" ON)
+ADD_OPTION(WITH_ICONV "enables character set conversion" OFF)
 ###############
 
 INCLUDE(${CC_SOURCE_DIR}/cmake/misc.cmake)
@@ -224,14 +222,20 @@ IF(UNIX)
   SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LIBNSL} ${LIBBIND} ${LIBICONV} ${LIBZ}
     ${LIBSOCKET} ${CMAKE_DL_LIBS} ${LIBM} ${LIBPTHREAD})
   SET(SYSTEM_LIBS ${SYSTEM_LIBS} ${LIBNSL} ${LIBBIND} ${LIBICONV} ${LIBZ}
-    ${LIBSOCKET} ${CMAKE_DL_LIBS} ${LIBM} ${LIBPTHREAD})
-  #remove possible dups from required libraries
-  LIST(LENGTH CMAKE_REQUIRED_LIBRARIES rllength)
-  IF(${rllength} GREATER 0)
-    LIST(REMOVE_DUPLICATES CMAKE_REQUIRED_LIBRARIES)
-  ENDIF()
+    ${LIBSOCKET} ${CMAKE_DL_LIBS} ${LIBDL} ${LIBM} ${LIBPTHREAD})
 ENDIF()
 
+IF(MINGW)
+  FIND_PACKAGE(Threads)
+  LIST(APPEND CMAKE_REQUIRED_LIBRARIES ${LIBPTHREAD})
+  LIST(APPEND SYSTEM_LIBS ${LIBPTHREAD})
+ENDIF()
+
+#remove possible dups from required libraries
+LIST(LENGTH CMAKE_REQUIRED_LIBRARIES rllength)
+IF(${rllength} GREATER 0)
+  LIST(REMOVE_DUPLICATES CMAKE_REQUIRED_LIBRARIES)
+ENDIF()
 
 IF(CMAKE_HAVE_PTHREAD_H)
   SET(CMAKE_REQUIRED_INCLUDES pthread.h)
