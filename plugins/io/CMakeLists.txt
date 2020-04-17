@@ -10,6 +10,6 @@ IF (WITH_CURL)
                   DEFAULT DYNAMIC
                   SOURCES ${CC_SOURCE_DIR}/plugins/io/remote_io.c
                   INCLUDES ${CURL_INCLUDE_DIR}
-                  LIBRARIES ${CURL_LIBRARIES})
+                  LIBRARIES ${CURL_LIBRARIES} ws2_32)
   ENDIF()
 ENDIF()
