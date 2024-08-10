@@ -480,7 +480,7 @@ struct st_mysql_client_plugin
   MYSQL_CLIENT_PLUGIN_HEADER
 };
 
-struct st_mysql_client_plugin *
+struct st_mysql_client_plugin * STDCALL
 mysql_load_plugin(struct st_mysql *mysql, const char *name, int type,
                   int argc, ...);
 struct st_mysql_client_plugin * STDCALL
