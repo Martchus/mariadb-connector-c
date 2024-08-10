@@ -64,7 +64,7 @@ static DWORD get_last_error()
 #define FAIL(...) \
    do{\
      status = get_last_error();\
-     ma_format_win32_error(errmsg, errmsg_len, status, __VA_ARGS__);\
+     ma_format_win32_error(errmsg, errmsg_len, status, ##__VA_ARGS__);\
      goto cleanup;\
   } while (0)
 
